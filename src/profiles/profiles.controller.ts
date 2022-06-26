@@ -1,14 +1,17 @@
 import { Controller, Get, Post } from '@nestjs/common';
+import { ProfilesService } from './profiles.service';
 
 @Controller('profiles')
 export class ProfilesController {
+  constructor(private profilesService: ProfilesService) {}
+
   @Get()
   findAll() {
-    return 'Search all profiles';
+    return this.profilesService.findAll();
   }
 
   @Post()
   create() {
-    return 'Create a profile';
+    return this.profilesService.create();
   }
 }
