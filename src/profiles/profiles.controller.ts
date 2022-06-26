@@ -1,4 +1,5 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CreateProfilesDto } from './dto/create-profiles.dto';
 import { ProfilesService } from './profiles.service';
 
 @Controller('profiles')
@@ -11,7 +12,7 @@ export class ProfilesController {
   }
 
   @Post()
-  create() {
-    return this.profilesService.create();
+  create(@Body() createProfilesDto: CreateProfilesDto) {
+    return this.profilesService.create(createProfilesDto);
   }
 }
