@@ -1,13 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProfilesDto } from './dto/create-profiles.dto';
+import { Profiles } from './entities/profiles.entity';
 
 @Injectable()
 export class ProfilesService {
+  profiles: Profiles[] = [];
+
   findAll() {
-    return 'Search all profiles';
+    return this.profiles;
   }
 
   create(createProfilesDto: CreateProfilesDto) {
-    return 'Create a profile: '+ JSON.stringify(createProfilesDto);
+    const profile: Profiles = { id: 'random_id', ...createProfilesDto };
+
+    this.profiles.push(profile);
+
+    return profile;
   }
 }
