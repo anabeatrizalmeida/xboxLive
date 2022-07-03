@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProfilesDto } from './dto/create-profiles.dto';
 import { Profiles } from './entities/profiles.entity';
 
 @Injectable()
 export class ProfilesService {
-  profiles: Profiles[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
   findAll() {
-    return this.profiles;
+    return this.prisma.profiles.findMany();
   }
 
   create(createProfilesDto: CreateProfilesDto) {
-    const profile: Profiles = { id: 'random_id', ...createProfilesDto };
+    const profile: Profiles = {...createProfilesDto };
 
-    this.profiles.push(profile);
-
-    return profile;
+    return this.prisma.profiles.create({
+      data: profile,
+    });
   }
 }

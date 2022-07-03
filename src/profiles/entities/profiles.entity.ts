@@ -1,5 +1,5 @@
 export class Profiles {
-  id: string;
+  id?: string;
   title: string;
   imageURL: string;
 }

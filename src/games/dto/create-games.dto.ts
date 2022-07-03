@@ -34,7 +34,7 @@ export class CreateGamesDto {
   @IsPositive()
   @ApiProperty({
     description: 'Imdb score (0 to 5)',
-    example: 4.1,
+    example: 4,
   })
   imdbScore: number;
 

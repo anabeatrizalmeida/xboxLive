@@ -1,5 +1,5 @@
 export class Games {
-  id: string;
+  id?: string;
   title: string;
   coverImageUrl: string;
   description: string;
