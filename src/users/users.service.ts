@@ -7,11 +7,15 @@ import { Users } from './entities/users.entity';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
+  findAll(): Promise<Users[]> {
     return this.prisma.users.findMany();
   }
 
-  create(createUsersDto: CreateUsersDto) {
+  findOne(id: string): Promise<Users> {
+    return this.prisma.users.findUnique({ where: { id }});
+  }
+
+  create(createUsersDto: CreateUsersDto): Promise<Users> {
     const user: Users = {...createUsersDto };
 
     return this.prisma.users.create({
