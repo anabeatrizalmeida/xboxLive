@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateProfilesDto } from './dto/create-profiles.dto';
 import { ProfilesService } from './profiles.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Profiles } from './entities/profiles.entity';
+import { UpdateProfilesDto } from './dto/update-profiles.dto';
 
 @ApiTags('profiles')
 @Controller('profiles')
@@ -31,5 +32,13 @@ export class ProfilesController {
   })
   create(@Body() createProfilesDto: CreateProfilesDto): Promise<Profiles>  {
     return this.profilesService.create(createProfilesDto);
+  }
+
+  @Patch(':id')
+  @ApiOperation({
+    summary: 'Edit a profile by ID',
+  })
+  update(@Param('id') id: string, @Body() dto: UpdateProfilesDto): Promise<Profiles> {
+    return this.profilesService.update(id, dto);
   }
 }

@@ -1,10 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProfilesDto } from './dto/create-profiles.dto';
+import { UpdateProfilesDto } from './dto/update-profiles.dto';
 import { Profiles } from './entities/profiles.entity';
 
 @Injectable()
 export class ProfilesService {
+  update(id: string, dto: UpdateProfilesDto): Promise<Profiles> {
+    const data: Partial<Profiles> = { ...dto };
+
+    return this.prisma.profiles.update({
+      where: { id },
+      data,
+    });
+  }
   constructor(private readonly prisma: PrismaService) {}
 
   findAll(): Promise<Profiles[]> {
