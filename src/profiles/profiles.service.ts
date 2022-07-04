@@ -6,6 +6,9 @@ import { Profiles } from './entities/profiles.entity';
 
 @Injectable()
 export class ProfilesService {
+  async delete(id: string) {
+    await this.prisma.profiles.delete({ where: { id } });
+  }
   update(id: string, dto: UpdateProfilesDto): Promise<Profiles> {
     const data: Partial<Profiles> = { ...dto };
 

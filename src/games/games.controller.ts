@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import { CreateGamesDto } from './dto/create-games.dto';
 import { GamesService } from './games.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -41,5 +41,14 @@ export class GamesController {
   })
   update(@Param('id') id: string, @Body() dto: UpdateGamesDto): Promise<Games> {
     return this.gamesService.update(id, dto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Remove a game by ID',
+  })
+  delete(@Param('id') id: string) {
+    this.gamesService.delete(id);
   }
 }

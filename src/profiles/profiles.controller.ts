@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import { CreateProfilesDto } from './dto/create-profiles.dto';
 import { ProfilesService } from './profiles.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -40,5 +40,14 @@ export class ProfilesController {
   })
   update(@Param('id') id: string, @Body() dto: UpdateProfilesDto): Promise<Profiles> {
     return this.profilesService.update(id, dto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Remove a profile by ID',
+  })
+  delete(@Param('id') id: string) {
+    this.profilesService.delete(id);
   }
 }
