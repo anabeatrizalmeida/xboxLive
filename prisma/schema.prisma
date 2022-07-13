@@ -17,17 +17,24 @@ model Games {
   trailerYouTubeUrl String
   gameplayYouTubeUrl String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  genres Genres[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("games")
 }
 
 model Genres {
   id     String @id @default(uuid())
   name  String
 
+  games Games[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("genres")
 }
 
 model Profiles {
@@ -35,20 +42,28 @@ model Profiles {
   title  String
   imageURL String
 
+  users   Users   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("profiles")
 }
 
 model Users {
   id     String @id @default(uuid())
   name  String
   email String @unique
-  password String @unique
+  password String
   cpf Int @unique
   isAdmin Boolean
 
+  profiles Profiles[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
 }
