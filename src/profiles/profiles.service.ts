@@ -1,54 +1,170 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { handleError } from 'src/utils/handle-error.util';
 import { CreateProfilesDto } from './dto/create-profiles.dto';
 import { UpdateProfilesDto } from './dto/update-profiles.dto';
-import { Profiles } from './entities/profiles.entity';
-import {handleError} from 'src/utils/handle-error.util';
 
 @Injectable()
-export class ProfilesService {
-  async delete(id: string) {
-    await this.findById(id);
-
-    await this.prisma.profiles.delete({ where: { id } });
-  }
-  async update(id: string, dto: UpdateProfilesDto): Promise<Profiles> {
-    await this.findById(id);
-
-    const data: Partial<Profiles> = { ...dto };
-
-    return this.prisma.profiles.update({
-      where: { id },
-      data,
-    }).catch(handleError);
-  }
+export class ProfileService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Promise<Profiles[]> {
-    return this.prisma.profiles.findMany();
-  }
-
-  async findById(id: string): Promise<Profiles> {
-    const record = await this.prisma.profiles.findUnique({ where: { id } });
-
-    if (!record) {
-      throw new NotFoundException(`Record with '${id}' not found.`)
+  async create(userId: string, dto: CreateProfilesDto) {
+    if (dto.gameId) {
+      return await this.prisma.profiles
+        .create({
+          data: {
+            title: dto.title,
+            imageUrl: dto.imageUrl,
+            userId: userId,
+            games: {
+              connect: {
+                id: dto.gameId,
+              },
+            },
+          },
+          include: { games: true, user: true },
+        })
+        .catch(handleError);
+    } else {
+      return await this.prisma.profiles
+        .create({
+          data: {
+            title: dto.title,
+            imageUrl: dto.imageUrl,
+            userId: userId,
+          },
+          include: { games: true },
+        })
+        .catch(handleError);
     }
-
-    return record;
   }
 
-  async findOne(id: string): Promise<Profiles> {
-    return this.findById(id);
+  findAll() {
+    return this.prisma.profiles.findMany({
+      include: {
+        games: true,
+        user: true,
+      },
+    });
   }
 
-  create(createProfilesDto: CreateProfilesDto): Promise<Profiles>  {
-    const profile: Profiles = {...createProfilesDto };
-
-    return this.prisma.profiles.create({
-      data: profile,
-    }).catch(handleError);
+  async findOne(id: string) {
+    return await this.prisma.profiles
+      .findUnique({
+        where: { id },
+        include: {
+          users: {
+            select: {
+              name: true,
+            },
+          },
+          games: true,
+          favoriteGames: {
+            select: {
+              games: true,
+              id: true,
+            },
+          },
+        },
+      })
+      .catch(handleError);
   }
 
+  async addOrRemoveFavoriteGame(profileId: string, gameId: string) {
+    const user = await this.findOne(profileId);
+    let favoriteGame = false;
+    user.favoriteGames.games.map((game) => {
+      if (game.id === gameId) {
+        favoriteGame = true;
+      }
+    });
+    if (favoriteGame) {
+      return await this.prisma.favoriteGame.update({
+        where: { id: user.favoriteGames.id },
+        data: {
+          games: {
+            disconnect: {
+              id: gameId,
+            },
+          },
+        },
+      });
+    } else {
+      return await this.prisma.favoriteGame.update({
+        where: { profileId },
+        data: {
+          games: {
+            connect: {
+              id: gameId,
+            },
+          },
+        },
+      });
+    }
+  }
 
+  async update(userId: string, id: string, dto: UpdateProfilesDto) {
+    const user = await this.findOne(id);
+
+    if (dto.gameId) {
+      let GameExist = false;
+      user.games.map((game) => {
+        if (game.id == dto.gameId) {
+          GameExist = true;
+        }
+      });
+      if (GameExist) {
+        return this.prisma.profiles
+          .update({
+            where: { id: id },
+            data: {
+              title: dto.title,
+              imageUrl: dto.imageUrl,
+              userId: userId,
+              games: {
+                disconnect: {
+                  id: dto.gameId,
+                },
+              },
+            },
+            include: { games: true },
+          })
+          .catch(handleError);
+      } else {
+        return this.prisma.profiles
+          .update({
+            where: { id: id },
+            data: {
+              title: dto.title,
+              imageUrl: dto.imageUrl,
+              userId: userId,
+              games: {
+                connect: {
+                  id: dto.gameId,
+                },
+              },
+            },
+            include: { games: true },
+          })
+          .catch(handleError);
+      }
+    } else {
+      return this.prisma.profiles
+        .update({
+          where: { id: id },
+          data: {
+            title: dto.title,
+            imageUrl: dto.imageUrl,
+            userId: userId,
+          },
+          include: { games: true },
+        })
+        .catch(handleError);
+    }
+  }
+
+  async delete(userId: string, id: string) {
+    await this.findOne(id);
+    await this.prisma.profiles.delete({ where: { id } });
+  }
 }

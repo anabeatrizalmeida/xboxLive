@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsInt, IsNumber, IsPositive, IsString, IsUrl } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateGamesDto {
   @IsString()
@@ -8,7 +8,7 @@ export class CreateGamesDto {
   })
   title: string;
 
-  @IsString()
+  @IsUrl()
   @ApiProperty({
     description: 'Link to the game cover image',
     example: 'https://m.media-amazon.com/images/I/71T-mFMy6pS._AC_SL1000_.jpg',
@@ -38,19 +38,26 @@ export class CreateGamesDto {
   })
   imdbScore: number;
 
-  @IsString()
+  @IsUrl()
   @ApiProperty({
     description: 'Game trailer on youtube',
     example: 'https://www.youtube.com/watch?v=7-IwwvIrawI',
   })
   trailerYouTubeUrl: string;
 
-  @IsString()
+  @IsUrl()
   @ApiProperty({
     description: 'Gameplay on youtube',
     example: 'https://www.youtube.com/watch?v=rLR6aZ5CRXI',
   })
   gameplayYouTubeUrl: string;
+
+  @IsString()
+  @ApiProperty({
+    description: 'The genre of the game',
+    example: 'Adventure',
+  })
+  genreName: string;
 }
 
 

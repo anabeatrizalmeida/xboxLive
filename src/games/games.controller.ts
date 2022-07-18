@@ -1,11 +1,16 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CreateGamesDto } from './dto/create-games.dto';
 import { GamesService } from './games.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Games } from './entities/games.entity';
 import { UpdateGamesDto } from './dto/update-games.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Users } from '@prisma/client';
+import { LoggedUser } from 'src/auth/logged-user.decorator';
 
 @ApiTags('games')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller('games')
 export class GamesController {
   constructor(private gamesService: GamesService) {}
@@ -31,16 +36,20 @@ export class GamesController {
   @ApiOperation({
     summary: 'Create a game',
   })
-  create(@Body() createGamesDto: CreateGamesDto): Promise<Games>  {
-    return this.gamesService.create(createGamesDto);
+  create(@LoggedUser() user: Users, @Body() dto: CreateGamesDto): Promise<Games> {
+    return this.gamesService.create(dto, user);
   }
 
   @Patch(':id')
   @ApiOperation({
     summary: 'Edit a game by ID',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateGamesDto): Promise<Games> {
-    return this.gamesService.update(id, dto);
+  update(
+    @LoggedUser() user: Users,
+    @Param('id') id: string,
+    @Body() dto: UpdateGamesDto,
+  ): Promise<Games> {
+    return this.gamesService.update(id, dto, user);
   }
 
   @Delete(':id')
@@ -48,7 +57,7 @@ export class GamesController {
   @ApiOperation({
     summary: 'Remove a game by ID',
   })
-  delete(@Param('id') id: string) {
-    this.gamesService.delete(id);
+  delete(@LoggedUser() user: Users, @Param('id') id: string) {
+    this.gamesService.delete(id, user);
   }
 }
