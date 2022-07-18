@@ -19,34 +19,6 @@ export class UsersService {
     updatedAt: true,
   };
 
-  async delete(id: string) {
-    await this.findById(id);
-
-    await this.prisma.users.delete({ where: { id } });
-  }
-  async update(id: string, createUsersDto: UpdateUsersDto): Promise<Users> {
-    await this.findById(id);
-
-    if (createUsersDto.password) {
-      if (createUsersDto.password != createUsersDto.confirmPassword) {
-        throw new BadRequestException('The passwords entered are not the same.');
-      }
-    }
-
-    delete createUsersDto.confirmPassword;
-
-    const data: Partial<Users> = { ...createUsersDto };
-
-    if (data.password) {
-      data.password = await bcrypt.hash(data.password, 10);
-    }
-
-    return this.prisma.users.update({
-      where: { id },
-      data,
-      select: this.usersSelect,
-    }).catch(handleError);
-  }
   constructor(private readonly prisma: PrismaService) {}
 
   findAll(): Promise<Users[]> {
@@ -82,6 +54,36 @@ export class UsersService {
       data: user,
       select: this.usersSelect,
     }).catch(handleError);
+  }
+
+  async update(id: string, createUsersDto: UpdateUsersDto): Promise<Users> {
+    await this.findById(id);
+
+    if (createUsersDto.password) {
+      if (createUsersDto.password != createUsersDto.confirmPassword) {
+        throw new BadRequestException('The passwords entered are not the same.');
+      }
+    }
+
+    delete createUsersDto.confirmPassword;
+
+    const data: Partial<Users> = { ...createUsersDto };
+
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10);
+    }
+
+    return this.prisma.users.update({
+      where: { id },
+      data,
+      select: this.usersSelect,
+    }).catch(handleError);
+  }
+
+  async delete(id: string) {
+    await this.findById(id);
+
+    await this.prisma.users.delete({ where: { id } });
   }
 
 }

@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UsersService } from './users.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Users } from './entities/users.entity';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateUsersDto } from './dto/update-users.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('users')
 @Controller('users')
@@ -11,18 +11,22 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'List all users',
   })
-  findAll(): Promise<Users[]> {
+  findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'View a user',
   })
-  findOne(@Param('id') id: string): Promise<Users> {
+  findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
@@ -30,19 +34,23 @@ export class UsersController {
   @ApiOperation({
     summary: 'Create a user',
   })
-  create(@Body() createUsersDto: CreateUsersDto): Promise<Users> {
+  create(@Body() createUsersDto: CreateUsersDto) {
     return this.usersService.create(createUsersDto);
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Edit a user by ID',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateUsersDto): Promise<Users> {
-    return this.usersService.update(id, dto);
+  update(@Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
+    return this.usersService.update(id, updateUsersDto);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Remove a user by ID',
