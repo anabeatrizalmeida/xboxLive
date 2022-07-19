@@ -14,7 +14,7 @@ export class ProfileService {
         .create({
           data: {
             title: dto.title,
-            imageUrl: dto.imageUrl,
+            imageURL: dto.imageURL,
             userId: userId,
             games: {
               connect: {
@@ -30,7 +30,7 @@ export class ProfileService {
         .create({
           data: {
             title: dto.title,
-            imageUrl: dto.imageUrl,
+            imageURL: dto.imageURL,
             userId: userId,
           },
           include: { games: true },
@@ -79,7 +79,7 @@ export class ProfileService {
       }
     });
     if (favoriteGame) {
-      return await this.prisma.favoriteGame.update({
+      return await this.prisma.favoriteGames.update({
         where: { id: user.favoriteGames.id },
         data: {
           games: {
@@ -90,7 +90,7 @@ export class ProfileService {
         },
       });
     } else {
-      return await this.prisma.favoriteGame.update({
+      return await this.prisma.favoriteGames.update({
         where: { profileId },
         data: {
           games: {
@@ -119,7 +119,7 @@ export class ProfileService {
             where: { id: id },
             data: {
               title: dto.title,
-              imageUrl: dto.imageUrl,
+              imageURL: dto.imageURL,
               userId: userId,
               games: {
                 disconnect: {
@@ -136,7 +136,7 @@ export class ProfileService {
             where: { id: id },
             data: {
               title: dto.title,
-              imageUrl: dto.imageUrl,
+              imageURL: dto.imageURL,
               userId: userId,
               games: {
                 connect: {
@@ -154,7 +154,7 @@ export class ProfileService {
           where: { id: id },
           data: {
             title: dto.title,
-            imageUrl: dto.imageUrl,
+            imageURL: dto.imageURL,
             userId: userId,
           },
           include: { games: true },

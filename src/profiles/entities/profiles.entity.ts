@@ -8,6 +8,4 @@ export class Profiles {
   users?: Users;
   games?: Games[];
   favoriteGames?: Games[];
-  createdAt?: Date;
-  updatedAt?: Date;
 }

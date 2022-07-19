@@ -18,7 +18,7 @@ export class CreateProfilesDto {
   @IsString()
   @ApiProperty({
     description: 'Game ID',
-    example: '9f4afb02-8108-404e-858b-f1a25ac2aa91',
+    example: 'd365c70b-2ce9-48f8-b0df-729c673b8a87',
   })
   gameId?: string;
 
@@ -26,8 +26,8 @@ export class CreateProfilesDto {
   @IsString()
   @ApiProperty({
     description: 'Favorite game ID',
-    example: '9f4afb02-8108-404e-858b-f1a25ac2aa91',
+    example: 'd365c70b-2ce9-48f8-b0df-729c673b8a87',
   })
-  favoriteGameId?: string;
+  favoriteGamesId?: string;
 }
 

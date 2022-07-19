@@ -1,28 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGenresDto } from './dto/create-genres.dto';
 import { UpdateGenresDto } from './dto/update-genres.dto';
 import { Genres } from './entities/genres.entity';
 import {handleError} from 'src/utils/handle-error.util';
+import { Users } from 'src/users/entities/users.entity';
 
 
 @Injectable()
 export class GenresService {
-  async delete(id: string) {
-    await this.findById(id);
-
-    await this.prisma.genres.delete({ where: { id } });
-  }
-  async update(id: string, dto: UpdateGenresDto): Promise<Genres> {
-    await this.findById(id);
-
-    const data: Partial<Genres> = { ...dto };
-
-    return this.prisma.genres.update({
-      where: { id },
-      data,
-    }).catch(handleError);
-  }
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -44,13 +30,48 @@ export class GenresService {
     return this.findById(id);
   }
 
-  create(createGenresDto: CreateGenresDto): Promise<Genres> {
-    const genre: Genres = {...createGenresDto };
-
-    return this.prisma.genres.create({
-      data: genre,
-    }).catch(handleError);
+  async create(dto: CreateGenresDto, user: Users): Promise<Genres> {
+    if (user.isAdmin) {
+      const genre: Genres = { ...dto };
+      return await this.prisma.genres
+        .create({
+          data: genre,
+        })
+        .catch(handleError);
+    } else {
+      throw new UnauthorizedException(
+        'You are not authorized to perform this action',
+      );
+    }
   }
 
+  async update(id: string, dto: UpdateGenresDto, user: Users): Promise<Genres> {
+    if (user.isAdmin) {
+      await this.findById(id);
+      const data: Partial<Genres> = { ...dto };
 
-}
+      return this.prisma.genres
+        .update({
+          where: { id },
+          data,
+        })
+        .catch(handleError);
+    } else {
+      throw new UnauthorizedException(
+        'You are not authorized to perform this action',
+      );
+    }
+  }
+
+  async delete(id: string, user: Users) {
+    if (user.isAdmin) {
+      await this.findById(id);
+      await this.prisma.genres.delete({ where: { id } });
+    } else {
+      throw new UnauthorizedException(
+        'You are not authorized to perform this action',
+      );
+    }
+  }
+  }
+

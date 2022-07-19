@@ -26,24 +26,25 @@ export class GamesController {
 
   @Get(':id')
   @ApiOperation({
-    summary: 'View a game',
+    summary: 'Find a game by ID',
   })
-  findOne(@Param('id') id: string): Promise<Games> {
-    return this.gamesService.findOne(id);
+  findbyId(@Param('id') id: string): Promise<Games> {
+    return this.gamesService.findById(id);
   }
 
   @Post()
   @ApiOperation({
     summary: 'Create a game',
   })
-  create(@LoggedUser() user: Users, @Body() dto: CreateGamesDto): Promise<Games> {
-    return this.gamesService.create(dto, user);
+  create(@LoggedUser() user: Users, @Body() createGamesDto: CreateGamesDto): Promise<Games> {
+    return this.gamesService.create(createGamesDto, user);
   }
 
   @Patch(':id')
   @ApiOperation({
     summary: 'Edit a game by ID',
   })
+
   update(
     @LoggedUser() user: Users,
     @Param('id') id: string,

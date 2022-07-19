@@ -25,7 +25,7 @@ export class ProfilesController {
 
   @Get(':id')
   @ApiOperation({
-    summary: 'View a profile',
+    summary: 'Find a profile by ID',
   })
   findOne(@Param('id') id: string) {
     return this.profilesService.findOne(id);
@@ -35,8 +35,8 @@ export class ProfilesController {
   @ApiOperation({
     summary: 'Create a profile',
   })
-  create(@LoggedUser() user: Users, @Body() createProfileDto: CreateProfilesDto) {
-    return this.profilesService.create(user.id, createProfileDto);
+  create(@LoggedUser() user: Users, @Body() createProfilesDto: CreateProfilesDto) {
+    return this.profilesService.create(user.id, createProfilesDto);
   }
 
   @Patch(':id')
