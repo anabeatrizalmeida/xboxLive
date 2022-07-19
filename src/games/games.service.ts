@@ -12,12 +12,8 @@ import { Prisma } from '@prisma/client';
 export class GamesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.prisma.games.findMany({
-      include: {
-        genres: true,
-      },
-    });
+  findAll(): Promise<Games[]> {
+    return this.prisma.games.findMany();
   }
 
   async findById(id: string) {
