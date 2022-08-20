@@ -1,32 +1,27 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: true,
-  });
+  const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .setTitle('xboxLive')
-    .setDescription(`Xbox Live-inspired app, Microsoft's platform for the Xbox video game console.`)
+    .setTitle('XboxLive')
+    .setDescription('Application inspired by the xbox live platform')
     .setVersion('1.0.0')
     .addTag('status')
-    .addTag('auth')
-    .addTag('games')
-    .addTag('genres')
-    .addTag('profiles')
-    .addTag('users')
-    .addTag('homepage')
-    .addBearerAuth()
+    .addTag('game')
+    .addTag('genre')
+    .addTag('profile')
+    .addTag('user')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT || 3333);
+  await app.listen(3333);
 }
 bootstrap();

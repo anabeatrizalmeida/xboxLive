@@ -1,17 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {GamesModule} from './games/games.module';
-import {GenresModule} from './genres/genres.module';
-import {ProfilesModule} from './profiles/profiles.module';
-import {UsersModule} from './users/users.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
-import { HomepageModule } from './homepage/homepage.module';
-
+import { GameModule } from './game/game.module';
+import {GenreModule} from './genre/genre.module';
+import {ProfileModule} from './profile/profile.module';
+import {UserModule} from './user/user.module';
 
 @Module({
-  imports: [GamesModule, GenresModule, ProfilesModule, UsersModule, PrismaModule, AuthModule, HomepageModule],
+  imports: [GameModule, GenreModule, ProfileModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })

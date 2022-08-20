@@ -6,3 +6,4 @@ export class AppService {
     return 'Server is running! 🚀\n Please check http://localhost:3333/api for Swagger docs...';
   }
 }
+
