@@ -1,5 +1,5 @@
 export class Game {
-  id: string;
+  id?: string;
   title: string;
   coverImageUrl: string;
   description: string;
@@ -7,4 +7,5 @@ export class Game {
   imdbScore: number;
   trailerYouTubeUrl: string;
   gameplayYouTubeUrl: string;
+  genreName?: string;
 }

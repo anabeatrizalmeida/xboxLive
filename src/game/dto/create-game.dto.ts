@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {IsString, IsUrl, IsNumber} from 'class-validator';
+import {IsString, IsUrl, IsNumber, IsPositive} from 'class-validator';
 
 export class CreateGameDto {
   @IsString()
@@ -24,15 +24,17 @@ export class CreateGameDto {
   description: string;
 
   @IsNumber()
+  @IsPositive()
   @ApiProperty({
-    description: 'Game release year',
-    example: 2004,
+    description: 'Year of release of the latest version of the game',
+    example: 2020,
   })
   year: number;
 
   @IsNumber()
+  @IsPositive()
   @ApiProperty({
-    description: 'Game score',
+    description: 'Game score (0 to 5)',
     example: 4,
   })
   imdbScore: number;
@@ -50,6 +52,13 @@ export class CreateGameDto {
     example: 'https://www.youtube.com/watch?v=rLR6aZ5CRXI',
   })
   gameplayYouTubeUrl: string;
+
+  @IsString()
+  @ApiProperty({
+    description: 'Game genre',
+    example: 'adventure',
+  })
+  genreName: string;
 }
 
 
