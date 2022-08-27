@@ -35,8 +35,8 @@ export class UserController {
   @ApiOperation({
     summary: 'Create a user',
   })
-  create(@Body() dto: CreateUserDto) {
-    return this.userService.create(dto);
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
 
   @Get(':id')
@@ -55,8 +55,8 @@ export class UserController {
   @ApiOperation({
     summary: 'Update a user by ID',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    return this.userService.update(id, dto);
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')

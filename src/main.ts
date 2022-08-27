@@ -11,8 +11,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .setTitle('xbox Live Server')
-    .setDescription('Application inspired by the xbox live platform')
+    .setTitle('xbox Live')
+    .setDescription(`Project inspired by Xbox Live, Microsoft's platform for the Xbox video game console`)
     .setVersion('1.0.0')
     .addTag('status')
     .addTag('auth')
@@ -20,12 +20,13 @@ async function bootstrap() {
     .addTag('genre')
     .addTag('user')
     .addTag('profile')
+    .addTag('homepage')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  const port = process.env.PORT || 3333;
-  await app.listen(port);
+
+  await app.listen(process.env.PORT || 3333);
 }
 bootstrap();

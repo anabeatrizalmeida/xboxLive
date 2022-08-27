@@ -17,7 +17,6 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
 import { User } from '@prisma/client';
-import { Profile } from './entities/profile.entity';
 
 @ApiTags('profile')
 @UseGuards(AuthGuard())
@@ -46,16 +45,34 @@ export class ProfileController {
   @ApiOperation({
     summary: 'Create a profile',
   })
-  create(@LoggedUser() user: User, @Body() dto: CreateProfileDto): Promise<Profile> {
-    return this.profileService.create(dto, user);
+  create(@LoggedUser() user: User, @Body() createProfileDto: CreateProfileDto) {
+    return this.profileService.create(user.id, createProfileDto);
   }
 
   @Patch(':id')
   @ApiOperation({
-    summary: 'Edit a profile by id',
+    summary: 'Update a profile by ID',
   })
-  update( @LoggedUser() user: User, @Param('id') id: string, @Body() dto: UpdateProfileDto): Promise<Profile> {
-    return this.profileService.update(id, dto, user);
+  update(
+    @LoggedUser() user: User,
+    @Param('id') id: string,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ) {
+    return this.profileService.update(user.id, id, updateProfileDto);
+  }
+
+  @Patch('favoriteGame/:id')
+  @ApiOperation({
+    summary: 'Add a favorite game to a profile',
+  })
+  updateFavorite(
+    @Param('id') id: string,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ) {
+    return this.profileService.addOrRemoveFavoriteGame(
+      id,
+      updateProfileDto.favoriteGameId,
+    );
   }
 
   @Delete(':id')

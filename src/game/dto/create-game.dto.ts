@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {IsString, IsUrl, IsNumber, IsPositive} from 'class-validator';
+import { IsNumber, IsPositive, IsString, IsUrl } from 'class-validator';
 
 export class CreateGameDto {
   @IsString()
@@ -12,7 +12,8 @@ export class CreateGameDto {
   @IsUrl()
   @ApiProperty({
     description: 'Game cover image url',
-    example: 'https://m.media-amazon.com/images/I/71T-mFMy6pS._AC_SL1000_.jpg',
+    example:
+      'https://m.media-amazon.com/images/I/71T-mFMy6pS._AC_SL1000_.jpg',
   })
   coverImageUrl: string;
 
@@ -26,7 +27,7 @@ export class CreateGameDto {
   @IsNumber()
   @IsPositive()
   @ApiProperty({
-    description: 'Year of release of the latest version of the game',
+    description: 'Year of release of the last version',
     example: 2020,
   })
   year: number;
@@ -34,22 +35,22 @@ export class CreateGameDto {
   @IsNumber()
   @IsPositive()
   @ApiProperty({
-    description: 'Game score (0 to 5)',
+    description: 'IMDB score (from 0 to 5)',
     example: 4,
   })
   imdbScore: number;
 
   @IsUrl()
   @ApiProperty({
-    description: 'Game trailer',
+    description: 'Game trailer URL',
     example: 'https://www.youtube.com/watch?v=7-IwwvIrawI',
   })
   trailerYouTubeUrl: string;
 
   @IsUrl()
   @ApiProperty({
-    description: 'Gameplay url',
-    example: 'https://www.youtube.com/watch?v=rLR6aZ5CRXI',
+    description: 'Gameplay URL',
+    example: 'https://www.youtube.com/watch?v=n8fWL8rz-Dw',
   })
   gameplayYouTubeUrl: string;
 
@@ -60,5 +61,3 @@ export class CreateGameDto {
   })
   genreName: string;
 }
-
-

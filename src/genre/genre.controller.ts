@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
@@ -17,7 +28,7 @@ export class GenreController {
 
   @Get()
   @ApiOperation({
-    summary: 'List all genres',
+    summary: 'Find all genres',
   })
   findAll(): Promise<Genre[]> {
     return this.genreService.findAll();
@@ -35,22 +46,29 @@ export class GenreController {
   @ApiOperation({
     summary: 'Create a genre',
   })
-  create(@LoggedUser() user: User,@Body() dto: CreateGenreDto): Promise<Genre> {
+  create(
+    @LoggedUser() user: User,
+    @Body() dto: CreateGenreDto,
+  ): Promise<Genre> {
     return this.genreService.create(dto, user);
   }
 
   @Patch(':id')
   @ApiOperation({
-    summary: 'Edit a genre by id',
+    summary: 'Update a genre by ID',
   })
-  update(@LoggedUser() user: User, @Param('id') id: string, @Body() dto: UpdateGenreDto): Promise<Genre> {
+  update(
+    @LoggedUser() user: User,
+    @Param('id') id: string,
+    @Body() dto: UpdateGenreDto,
+  ): Promise<Genre> {
     return this.genreService.update(id, dto, user);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Remove a genre by id',
+    summary: 'Delete a genre by ID',
   })
   delete(@LoggedUser() user: User, @Param('id') id: string) {
     this.genreService.delete(id, user);

@@ -13,16 +13,16 @@ model Game {
   coverImageUrl      String @map("cover_image_url")
   description        String
   year               Int
-  imdbScore          Float  @map("imdb_score")
+  imdbScore          Int    @map("imdb_score")
   trailerYouTubeUrl  String @map("trailer_youtube_url")
   gameplayYouTubeUrl String @map("gameplay_youtube_url")
 
+  favoriteGames FavoriteGame[]
+  genres        Genre[]
+  profiles      Profile[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
-  genre     Genre[]
-  profile   Profile[]
-  favorites Favorites[]
 
   @@map("game")
 }
@@ -31,55 +31,54 @@ model Genre {
   id   String @id @default(uuid())
   name String @unique
 
+  games Game[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
-  game Game[]
 
   @@map("genre")
-}
-
-model Profile {
-  id       String @id @default(uuid())
-  title    String
-  imageURL String @map("image_url")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @map("user_id")
-
-  game      Game[]
-  favorites Favorites?
-
-  @@map("profile")
 }
 
 model User {
   id       String  @id @default(uuid())
   name     String
-  nickname String  @unique
+  email    String  @unique
   password String
+  cpf      String  @unique
   isAdmin  Boolean @default(false) @map("is_admin")
+
+  profiles Profile[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
-  profile Profile[]
 
   @@map("user")
 }
 
-model Favorites {
-  id        String  @id @default(uuid())
-  profile   Profile @relation(fields: [profileId], references: [id])
-  profileId String  @unique @map("profile_id")
+model Profile {
+  id       String @id @default(uuid())
+  title    String
+  imageUrl String @map("image_url")
 
-  game Game[]
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  games         Game[]
+  favoriteGames FavoriteGame?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("favorites")
+  @@map("profile")
+}
+
+model FavoriteGame {
+  id String @id @default(uuid())
+
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @unique @map("profile_id")
+
+  games Game[]
+
+  @@map("profile_game")
 }
